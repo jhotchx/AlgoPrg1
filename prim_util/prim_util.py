@@ -75,7 +75,7 @@ class minheap:
 
 def genRandomGraph(nodes,dimension):
    # first graph type
-   if dimension<2:
+   if dimension==0:
        nodes = range(nodes)
        edges = [(x,np.random.rand()) for x in it.combinations(nodes,2)]
    # multidimensional graphs
@@ -93,8 +93,7 @@ def cutOff(n,d,extra=0):
     else:
         return()
 
-def Prim(V,E,d,x=0):
-    global t
+def Prim(V,E,d,t=0,x=0):
     threshold = cutOff(len(V),d,x)
     E = [edge for edge in E if edge[1]<threshold]
     if d!=0:
@@ -111,7 +110,7 @@ def Prim(V,E,d,x=0):
         if SP:
            SP.remove(v[0])
         for e in E:
-            if d!=1:
+            if d!=0:
                 enodes = [tuple(i) for i in e[0]]
             else:
                 enodes = e[0]
@@ -123,7 +122,7 @@ def Prim(V,E,d,x=0):
                         prevd[w] = v[0]
                         H.insert((w,distd[w]))
     if not any(dist ==math.inf for dist in distd.values()):
-        return (distd)
+        return (sum(distd.values()))
     else:
         print(t)
         t+=1
