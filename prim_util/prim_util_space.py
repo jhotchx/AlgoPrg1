@@ -104,7 +104,7 @@ def genRandomGraph(n,d,t=0,nodes=[],edges=[]):
 def cutOff(n,d,extra=0):
     # multiply predicted cutoff by 2 to account for outliers
     if d ==0:
-        return((3/math.pi)*(math.atan(-x/20)+math.pi/2)*2)
+        return((3/math.pi)*(math.atan(-n/20)+math.pi/2)*2)
     elif d ==2:
         return((8/math.pi)*(math.atan(-n/20)+math.pi/2)+.01+extra)
     elif d==3:
