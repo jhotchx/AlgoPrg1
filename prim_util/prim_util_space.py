@@ -78,10 +78,12 @@ def euclideanDist(a,b):
         temp +=math.pow((a[i]-b[i]),2)
     return(math.sqrt(temp))
 
-def genRandomGraph(n,d,t=0,nodes=[],edges=[]):
+def genRandomGraph(n,d,t=0,nodes=None,edges=None):
+    if edges is None:
+        edges=[]
     threshold = cutOff(n,d,t)
     if d == 0:
-        if len(nodes)==0:
+        if nodes is None:
             nodes = range(n)
         for i in range(n):
             for j in range(n):
@@ -90,12 +92,12 @@ def genRandomGraph(n,d,t=0,nodes=[],edges=[]):
                     if edge[1]<threshold:
                         edges.append(edge)
     else:
-        if len(nodes)==0:
+        if nodes is None:
             nodes = [[None]*d]*n
             nodes = [[random.random() for j in nodes[i]] for i in range(n)]
         for i in range(n):
             for j in range(n):
-                if j>i:
+                if j<i:
                     edge = ((nodes[i],nodes[j]),euclideanDist(nodes[i],nodes[j]))
                     if edge[1]<threshold:
                         edges.append(edge)
