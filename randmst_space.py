@@ -18,8 +18,7 @@ def main(n,trials,d):
             t+=.01
             nodes,edges = genRandomGraph(n,d,t,nodes,edges)
             res = Prim(nodes,edges,d)
-        else: 
-            results.append(sum(res))
+        results.append(sum(res))
     print('the average minimum spanning tree weight for a graph with',len(nodes),'nodes in',dimension,'dimensions, over',trials,'trials was:',statistics.mean(results))
 
 if __name__ == "__main__":

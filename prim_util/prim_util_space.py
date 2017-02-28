@@ -81,7 +81,7 @@ def euclideanDist(a,b):
 def genRandomGraph(n,d,t=0,nodes=[],edges=[]):
     threshold = cutOff(n,d,t)
     if d == 0:
-        if length(nodes)==0:
+        if len(nodes)==0:
             nodes = range(n)
         for i in range(n):
             for j in range(n):
@@ -90,7 +90,7 @@ def genRandomGraph(n,d,t=0,nodes=[],edges=[]):
                     if edge[1]<threshold:
                         edges.append(edge)
     else:
-        if length(nodes)==0:
+        if len(nodes)==0:
             nodes = [[None]*d]*n
             nodes = [[random.random() for j in nodes[i]] for i in range(n)]
         for i in range(n):

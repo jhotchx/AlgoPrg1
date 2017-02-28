@@ -1,77 +1,59 @@
 import prim_util.prim_util_space as pu
 import importlib as imp
-import statistics as stat
+import math
+import statistics
 import time
 imp.reload(pu)
 
-def main():
-    d=4
+#@profile
+def randmst(n,trials,d):
+    treelen = []
+    maxnodes = []
+    for i in range(trials):
+        nodes,edges = pu.genRandomGraph(n,d)
+        res = pu.Prim(nodes,edges,d)
+        t = 0
+        while any(dist ==math.inf for dist in res):
+            t+=.01
+            nodes,edges = pu.genRandomGraph(n,d,t,nodes,edges)
+            res = pu.Prim(nodes,edges,d)
+        treelen.append(sum(res))
+        maxnodes = [max(res)]
+    print('the average minimum spanning tree weight for a graph with',len(nodes),'nodes in',dimension,'dimensions, over',trials,'trials was:',statistics.mean(treelen))
+    return(treelen, maxnodes)
+
+if __name__ == "__main__":
+    dimension=4
     values = []
     tree = []
     for nodenum in range(2,101):
-       a=time.perf_counter()
-       tempVal = []
-       tempTree = []
-       for trials in range(100):
-           nodes,edges = pu.genRandomGraph(nodenum,d)
-           x= pu.Prim(nodes,edges,d)
-           tempVal.append(max(x.values()))
-           tempTree.append(sum(x.values()))
-       values.append(max(tempVal))
-       tree.append(stat.mean(tempTree))
-       b=time.perf_counter()
-       print(nodenum,b-a)    
+        a=time.perf_counter()
+        t,m = randmst(nodenum,50,dimension)
+        values.append(m)
+        b=time.perf_counter()
+        print(nodenum,b-a)    
     for nodenum in range(110,210,10):
-       a=time.perf_counter()
-       tempVal = []
-       tempTree = []
-       for trials in range(20):
-           nodes,edges = pu.genRandomGraph(nodenum,d)
-           x= pu.Prim(nodes,edges,d)
-           tempVal.append(max(x.values()))
-           tempTree.append(sum(x.values()))
-       values.append(max(tempVal))
-       tree.append(stat.mean(tempTree))
-       b=time.perf_counter()
-       print(nodenum,b-a) 
+        a=time.perf_counter()
+        t,m = randmst(nodenum,20,dimension)
+        values.append(m)
+        b=time.perf_counter()
+        print(nodenum,b-a)
     for nodenum in range(225,425,25):
-       a=time.perf_counter()
-       tempVal = []
-       tempTree = []
-       for trials in range(10):
-           nodes,edges = pu.genRandomGraph(nodenum,d)
-           x= pu.Prim(nodes,edges,d)
-           tempVal.append(max(x.values()))
-           tempTree.append(sum(x.values()))
-       values.append(max(tempVal))
-       tree.append(stat.mean(tempTree))
-       b=time.perf_counter()
-       print(nodenum,b-a) 
+        a=time.perf_counter()
+        t,m = randmst(nodenum,10,dimension)
+        values.append(m)
+        b=time.perf_counter()
+        print(nodenum,b-a)
     for nodenum in range(450,850,50):
-       a=time.perf_counter()
-       tempVal = []
-       tempTree = []
-       for trials in range(10):
-           nodes,edges = pu.genRandomGraph(nodenum,d)
-           x= pu.Prim(nodes,edges,d)
-           tempVal.append(max(x.values()))
-           tempTree.append(sum(x.values()))
-       values.append(max(tempVal))
-       tree.append(stat.mean(tempTree))
-       b=time.perf_counter()
-       print(nodenum,b-a) 
+        a=time.perf_counter()
+        t,m = randmst(nodenum,10,dimension)
+        values.append(m)
+        b=time.perf_counter()
+        print(nodenum,b-a)
     for nodenum in range(850,1550,100):
-       a=time.perf_counter()
-       tempVal = []
-       tempTree = []
-       for trials in range(10):
-           nodes,edges = pu.genRandomGraph(nodenum,d)
-           x= pu.Prim(nodes,edges,d)
-           tempVal.append(max(x.values()))
-           tempTree.append(sum(x.values()))
-       values.append(max(tempVal))
-       tree.append(stat.mean(tempTree))
-       b=time.perf_counter()
-       print(nodenum,b-a)
-       
-main()
+        a=time.perf_counter()
+        t,m = randmst(nodenum,10,dimension)
+        values.append(m)
+        b=time.perf_counter()
+        print(nodenum,b-a)
+        
