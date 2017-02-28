@@ -103,7 +103,7 @@ def cutOff(n,d,extra=0):
     elif d==3:
         return((3/math.pi)*(math.atan(-n/30)+math.pi/2)+0.2+extra)
     else:
-        return(extra)
+        return((3/math.pi)*(math.atan(-n/30)+math.pi/2)+0.5)
 
 def Prim(V,E,d):
     if d!=0:
