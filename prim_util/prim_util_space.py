@@ -100,8 +100,6 @@ def cutOff(n,d,extra=0):
         return((2/math.pi)*(math.atan(-n/10)+math.pi/2)+.001+extra)
     elif d ==2:
         return((8/math.pi)*(math.atan(-n/20)+math.pi/2)+.01+extra)
-    elif d==3:
-        return((3/math.pi)*(math.atan(-n/30)+math.pi/2)+0.2+extra)
     else:
         return(extra)
 
