@@ -1,7 +1,4 @@
-import itertools as it
-import time as time
 import math
-import statistics
 import random
 import sys
 
@@ -81,11 +78,11 @@ def euclideanDist(a,b):
         temp +=math.pow((a[i]-b[i]),2)
     return(math.sqrt(temp))
 
-def genRandomGraph(n,d,t=0):
-    edges=[]
+def genRandomGraph(n,d,t=0,nodes=[],edges=[]):
     threshold = cutOff(n,d,t)
     if d == 0:
-        nodes = range(n)
+        if length(nodes)==0:
+            nodes = range(n)
         for i in range(n):
             for j in range(n):
                 if j<i:
@@ -93,8 +90,9 @@ def genRandomGraph(n,d,t=0):
                     if edge[1]<threshold:
                         edges.append(edge)
     else:
-        nodes = [[None]*d]*n
-        nodes = [[random.random() for j in nodes[i]] for i in range(n)]
+        if length(nodes)==0:
+            nodes = [[None]*d]*n
+            nodes = [[random.random() for j in nodes[i]] for i in range(n)]
         for i in range(n):
             for j in range(n):
                 if j>i:
@@ -106,13 +104,13 @@ def genRandomGraph(n,d,t=0):
 def cutOff(n,d,extra=0):
     # multiply predicted cutoff by 2 to account for outliers
     if d ==0:
-        return((2/math.pi)*(math.atan(-n/10)+math.pi/2)+.001+extra)
+        return((3/math.pi)*(math.atan(-x/20)+math.pi/2)*2)
     elif d ==2:
         return((8/math.pi)*(math.atan(-n/20)+math.pi/2)+.01+extra)
     elif d==3:
         return((3/math.pi)*(math.atan(-n/30)+math.pi/2)+0.2+extra)
-    else:
-        return(extra)
+    elif d==4:
+        return((3/math.pi)*(math.atan(-n/30)+math.pi/2)+2.0+extra)
 
 def Prim(V,E,d):
     if d!=0:

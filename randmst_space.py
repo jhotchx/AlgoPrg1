@@ -1,5 +1,6 @@
-from prim_util.prim_util import *
-
+from prim_util.prim_util_space import *
+import statistics
+import sys
 
 testing = sys.argv[1]
 nodes = int(sys.argv[2])
@@ -15,9 +16,7 @@ def main(n,trials,d):
         t = 0
         while any(dist ==math.inf for dist in res):
             t+=.01
-            print(t)
-            print(res)
-            nodes,edges = genRandomGraph(n,d,t)
+            nodes,edges = genRandomGraph(n,d,t,nodes,edges)
             res = Prim(nodes,edges,d)
         else: 
             results.append(sum(res))
