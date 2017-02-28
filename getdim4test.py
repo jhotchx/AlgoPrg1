@@ -1,4 +1,4 @@
-import prim_util.prim_util as pu
+import prim_util.prim_util_space as pu
 import importlib as imp
 import statistics as stat
 import time
@@ -72,6 +72,6 @@ def main():
        values.append(max(tempVal))
        tree.append(stat.mean(tempTree))
        b=time.perf_counter()
-       print(nodenum,b-a) 
+       print(nodenum,b-a)
        
 main()
