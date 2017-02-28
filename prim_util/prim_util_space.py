@@ -1,7 +1,9 @@
 import itertools as it
 import time as time
 import math
-import numpy as np
+import statistics
+import random
+import sys
 
 class minheap:
     def __init__(self):
@@ -73,6 +75,12 @@ class minheap:
         self.heapify(0)
         return min
 
+def euclideanDist(a,b):
+    temp = 0
+    for i in range(len(a)):
+        temp +=math.pow((a[i]-b[i]),2)
+    return(math.sqrt(temp))
+
 def genRandomGraph(n,d,t=0):
     edges=[]
     threshold = cutOff(n,d,t)
@@ -81,15 +89,16 @@ def genRandomGraph(n,d,t=0):
         for i in range(n):
             for j in range(n):
                 if j<i:
-                    edge = ((i,j),np.random.rand())
+                    edge = ((i,j),random.random())
                     if edge[1]<threshold:
                         edges.append(edge)
     else:
-        nodes = np.random.rand(n,d)
+        nodes = [[None]*d]*n
+        nodes = [[random.random() for j in nodes[i]] for i in range(n)]
         for i in range(n):
             for j in range(n):
                 if j>i:
-                    edge = ((nodes[i],nodes[j]),np.linalg.norm(nodes[i]-nodes[j]))
+                    edge = ((nodes[i],nodes[j]),euclideanDist(nodes[i],nodes[j]))
                     if edge[1]<threshold:
                         edges.append(edge)
     return(nodes,edges)
@@ -100,6 +109,8 @@ def cutOff(n,d,extra=0):
         return((2/math.pi)*(math.atan(-n/10)+math.pi/2)+.001+extra)
     elif d ==2:
         return((8/math.pi)*(math.atan(-n/20)+math.pi/2)+.01+extra)
+    elif d==3:
+        return((3/math.pi)*(math.atan(-n/30)+math.pi/2)+0.2+extra)
     else:
         return(extra)
 

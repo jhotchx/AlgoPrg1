@@ -1,5 +1,5 @@
 from prim_util.prim_util import *
-import sys
+
 
 testing = sys.argv[1]
 nodes = int(sys.argv[2])
@@ -21,7 +21,7 @@ def main(n,trials,d):
             res = Prim(nodes,edges,d)
         else: 
             results.append(sum(res))
-    print('the average minimum spanning tree weight for a graph with',len(nodes),'nodes in',dimension,'dimensions, over',trials,'trials was:',np.mean(results))
+    print('the average minimum spanning tree weight for a graph with',len(nodes),'nodes in',dimension,'dimensions, over',trials,'trials was:',statistics.mean(results))
 
 if __name__ == "__main__":
     main(nodes,trials,dimension)
