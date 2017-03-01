@@ -123,12 +123,12 @@ def cutOff(n,d,extra=0):
     if d ==0:
         return((3/math.pi)*(math.atan(-n/20)+math.pi/2)*2)
     elif d ==2:
-        return((8/math.pi)*(math.atan(-n/20)+math.pi/2)+.01+extra)
+        return((3/math.pi)*(math.atan(-n/35)+math.pi/2)+0.03+extra)
     elif d==3:
-        return((3/math.pi)*(math.atan(-n/30)+math.pi/2)+0.2+extra)
+        return((3/math.pi)*(math.atan(-n/35)+math.pi/2)+0.18+extra)
     elif d==4:
-        return((3/math.pi)*(math.atan(-n/30)+math.pi/2)+2.0+extra)
-
+        return((3/math.pi)*(math.atan(-n/60)+math.pi/2)+0.23+extra)
+(3/pi)*(atan(-x/60)+pi/2)+0.23
 def Prim(V,E,d):
     if d!=0:
         V = tuple(map(tuple, V))
