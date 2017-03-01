@@ -14,7 +14,6 @@ def Prim(V,E,d):
         V = tuple(map(tuple, V))
     SP = set(V)
     distd = dict(zip(V,[math.inf]*len(V)))
-    prevd = dict(zip(V,[None]*len(V)))
     distd[V[0]] = 0
     H = minheap()     
     H.insert((V[0],distd[V[0]]))
@@ -26,7 +25,6 @@ def Prim(V,E,d):
             if e[0] in SP:
                 if distd[e[0]] > e[1]:
                     distd[e[0]] = e[1]
-                    prevd[e[0]] = v[0]
                     H.insert((e[0],distd[e[0]]))
     return (distd.values())
 

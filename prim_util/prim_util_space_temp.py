@@ -121,7 +121,7 @@ def genRandomGraph(n,d,t=0,nodes=None):
 def cutOff(n,d,extra=0):
     # multiply predicted cutoff by 2 to account for outliers
     if d ==0:
-        return((3/math.pi)*(math.atan(-n/20)+math.pi/2)*2)
+        return((3/math.pi)*(math.atan(-n/20)+math.pi/2)*2+extra)
     elif d ==2:
         return((3/math.pi)*(math.atan(-n/35)+math.pi/2)+0.03+extra)
     elif d==3:
@@ -134,7 +134,6 @@ def Prim(V,E,d):
         V = tuple(map(tuple, V))
     SP = set(V)
     distd = dict(zip(V,[math.inf]*len(V)))
-    prevd = dict(zip(V,[None]*len(V)))
     distd[V[0]] = 0
     H = minheap()     
     H.insert((V[0],distd[V[0]]))
@@ -146,6 +145,5 @@ def Prim(V,E,d):
             if e[0] in SP:
                 if distd[e[0]] > e[1]:
                     distd[e[0]] = e[1]
-                    prevd[e[0]] = v[0]
                     H.insert((e[0],distd[e[0]]))
     return (distd.values())
