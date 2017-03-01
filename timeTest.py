@@ -7,6 +7,7 @@ d = int(sys.argv[2])
 
 V,E = genRandomGraph(n,d)
 
+# run with line profiler like this; python kernprof.py -l -v timeTest.py 10000 0
 @profile
 def Prim(V,E,d):
     if d!=0:
@@ -22,16 +23,13 @@ def Prim(V,E,d):
         if SP:
            SP.remove(v[0])
         for e in E[v[0]]:
-            if v[0]==e[0]:
-                w = e[1]
-            else:
-                w = e[0]
-            if w in SP:
-                if distd[w] > e[2]:
-                    distd[w] = e[2]
-                    prevd[w] = v[0]
-                    H.insert((w,distd[w]))
+            if e[0] in SP:
+                if distd[e[0]] > e[1]:
+                    distd[e[0]] = e[1]
+                    prevd[e[0]] = v[0]
+                    H.insert((e[0],distd[e[0]]))
     return (distd.values())
+
 
 Prim(V,E,d)
 
