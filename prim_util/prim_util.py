@@ -1,6 +1,7 @@
+import itertools as it
+import time as time
 import math
-import random
-import sys
+import numpy as np
 
 class minheap:
     def __init__(self):
@@ -72,80 +73,64 @@ class minheap:
         self.heapify(0)
         return min
 
-def euclideanDist(a,b):
-    temp = 0
-    for i in range(len(a)):
-        temp +=math.pow((a[i]-b[i]),2)
-    return(math.sqrt(temp))
-
-def genRandomGraph(n,d,t=0,nodes=None):
-    edgedict={}
+def genRandomGraph(n,d,t=0):
+    edges=[]
     threshold = cutOff(n,d,t)
     if d == 0:
-        if nodes is None:
-            nodes = range(n)
-        for i in range(n-1):
+        nodes = range(n)
+        for i in range(n):
             for j in range(n):
-                if j>i:
-                    edge = [i,j,random.random()]
-                    if edge[2]<threshold:
-                        if i in edgedict:
-                            edgedict[i].append([edge[1],edge[2]])
-                        else:
-                            edgedict[i] = [[edge[1],edge[2]]]
-                        if j in edgedict:
-                            edgedict[j].append([edge[0],edge[2]])
-                        else:
-                            edgedict[j] = [[edge[0],edge[2]]]
+                if j<i:
+                    edge = ((i,j),random.random())
+                    if edge[1]<threshold:
+                        edges.append(edge)
     else:
-        if nodes is None:
-            nodes = [[None]*d]*n
-            nodes = [[random.random() for j in nodes[i]] for i in range(n)]
-        for i in range(n-1):
+        nodes = [[None]*d]*n
+        np.random.rand(n,d)
+        for i in range(n):
             for j in range(n):
                 if j>i:
-                    itup=tuple(nodes[i])
-                    jtup=tuple(nodes[j])
-                    edge = [itup,jtup,euclideanDist(nodes[i],nodes[j])]
-                    if edge[2]<threshold:
-                        if itup in edgedict:
-                            edgedict[itup].append([edge[1],edge[2]])
-                        else:
-                            edgedict[itup] = [[edge[1],edge[2]]]
-                        if jtup in edgedict:
-                            edgedict[jtup].append([edge[0],edge[2]])
-                        else:
-                            edgedict[jtup] = [[edge[0],edge[2]]]
-    return(nodes,edgedict)
+                    edge = ((nodes[i],nodes[j]),np.linalg.norm(nodes[i]-nodes[j]))
+                    if edge[1]<threshold:
+                        edges.append(edge)
+    return(nodes,edges)
 
 def cutOff(n,d,extra=0):
     # multiply predicted cutoff by 2 to account for outliers
     if d ==0:
-        return((3/math.pi)*(math.atan(-n/20)+math.pi/2)*2)
+        return((2/math.pi)*(math.atan(-n/10)+math.pi/2)+.001+extra)
     elif d ==2:
-        return((3/math.pi)*(math.atan(-n/35)+math.pi/2)+0.03+extra)
+        return((8/math.pi)*(math.atan(-n/20)+math.pi/2)+.01+extra)
     elif d==3:
-        return((3/math.pi)*(math.atan(-n/35)+math.pi/2)+0.18+extra)
-    elif d==4:
-        return((3/math.pi)*(math.atan(-n/60)+math.pi/2)+0.23+extra)
+        return((3/math.pi)*(math.atan(-n/30)+math.pi/2)+0.2+extra)
+    else:
+        return((3/math.pi)*(math.atan(-n/30)+math.pi/2)+0.5)
 
 def Prim(V,E,d):
+    @profile
     if d!=0:
         V = tuple(map(tuple, V))
     SP = set(V)
+    #print("Initial SP=",SP)
     distd = dict(zip(V,[math.inf]*len(V)))
     prevd = dict(zip(V,[None]*len(V)))
     distd[V[0]] = 0
-    H = minheap()     
+    H = minheap()     #Heap
     H.insert((V[0],distd[V[0]]))
     while H.heapsize!=-1:
         v = H.delete() 
         if SP:
            SP.remove(v[0])
-        for e in E[v[0]]:
-            if e[0] in SP:
-                if distd[e[0]] > e[1]:
-                    distd[e[0]] = e[1]
-                    prevd[e[0]] = v[0]
-                    H.insert((e[0],distd[e[0]]))
+        for e in E:
+            if d!=0:
+                enodes = [tuple(i) for i in e[0]]
+            else:
+                enodes = e[0]
+            if v[0] in enodes:
+                w = enodes[1-enodes.index(v[0])]
+                if w in SP:
+                    if distd[w] > e[1]:
+                        distd[w] = e[1]
+                        prevd[w] = v[0]
+                        H.insert((w,distd[w]))
     return (distd.values())
