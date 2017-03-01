@@ -29,31 +29,31 @@ if __name__ == "__main__":
     for nodenum in range(2,101):
         a=time.perf_counter()
         t,m = randmst(nodenum,100,dimension)
-        values.append(statistics.mean(m))
+        values.append(max(m))
         b=time.perf_counter()
         print(nodenum,b-a)    
     for nodenum in range(110,210,10):
         a=time.perf_counter()
         t,m = randmst(nodenum,20,dimension)
-        values.append(statistics.mean(m))
+        values.append(max(m))
         b=time.perf_counter()
         print(nodenum,b-a)
     for nodenum in range(225,425,25):
         a=time.perf_counter()
         t,m = randmst(nodenum,10,dimension)
-        values.append(statistics.mean(m))
+        values.append(max(m))
         b=time.perf_counter()
         print(nodenum,b-a)
     for nodenum in range(450,850,50):
         a=time.perf_counter()
         t,m = randmst(nodenum,10,dimension)
-        values.append(statistics.mean(m))
+        values.append(max(m))
         b=time.perf_counter()
         print(nodenum,b-a)
     for nodenum in range(850,1550,100):
         a=time.perf_counter()
         t,m = randmst(nodenum,10,dimension)
-        values.append(statistics.mean(m))
+        values.append(max(m))
         b=time.perf_counter()
         print(nodenum,b-a)
         
