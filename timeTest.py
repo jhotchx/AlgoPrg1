@@ -1,4 +1,4 @@
-from prim_util.prim_util_space_temp import *
+from prim_util.prim_util import *
 import statistics
 import sys
 
@@ -29,7 +29,7 @@ def Prim(V,E,d):
 
 @profile
 def genRandomGraph(n,d,t=0,nodes=None):
-    edgedict={}
+    edgedict=defaultdict(list)
     threshold = cutOff(n,d,t)
     if d == 0:
         if nodes is None:
@@ -37,16 +37,10 @@ def genRandomGraph(n,d,t=0,nodes=None):
         for i in range(n-1):
             for j in range(n):
                 if j>i:
-                    edge = [i,j,random.random()]
-                    if edge[2]<threshold:
-                        if i in edgedict:
-                            edgedict[i].append([edge[1],edge[2]])
-                        else:
-                            edgedict[i] = [[edge[1],edge[2]]]
-                        if j in edgedict:
-                            edgedict[j].append([edge[0],edge[2]])
-                        else:
-                            edgedict[j] = [[edge[0],edge[2]]]
+                    edgewgt = random.random()
+                    if edgewgt<threshold:
+                        edgedict[i].append([j,edgewgt])
+                        edgedict[j].append([i,edgewgt])
     else:
         if nodes is None:
             nodes = [[None]*d]*n
@@ -56,18 +50,11 @@ def genRandomGraph(n,d,t=0,nodes=None):
                 if j>i:
                     itup=tuple(nodes[i])
                     jtup=tuple(nodes[j])
-                    edge = [itup,jtup,euclideanDist(nodes[i],nodes[j])]
-                    if edge[2]<threshold:
-                        if itup in edgedict:
-                            edgedict[itup].append([edge[1],edge[2]])
-                        else:
-                            edgedict[itup] = [[edge[1],edge[2]]]
-                        if jtup in edgedict:
-                            edgedict[jtup].append([edge[0],edge[2]])
-                        else:
-                            edgedict[jtup] = [[edge[0],edge[2]]]
+                    edgewgt = euclideanDist(nodes[i],nodes[j])
+                    if edgewgt<threshold:
+                        edgedict[itup].append([jtup,edgewgt])
+                        edgedict[jtup].append([itup,edgewgt])
     return(nodes,edgedict)
-
 
 V,E = genRandomGraph(n,d)
 Prim(V,E,d)
