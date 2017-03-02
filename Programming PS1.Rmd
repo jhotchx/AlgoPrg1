@@ -1,0 +1,59 @@
+---
+title: "Algorithms Programming PS1"
+author: "Josh Kaplan & John Hotchkiss"
+date: "3/2/2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r, include=FALSE}
+# d = 0
+x = c(16,32,64,128,256,512,1024,2048,4096,8192,16384)
+y0 = c(1.1761516976976152, 1.2893791594683865, 1.2011415156545038, 1.2625970167532716, 1.2508610725981701, 1.1821490332236186, 1.2538311212322837,1.2049225953543985, 1.2026818013521898, 1.2112227573940526, 1.1987999451103029)
+
+# d = 2
+y2 = c(2.859971752205042, 3.741835235070977, 5.489154295536831, 7.496303082807269, 10.619540670775686, 14.964802591719781, 21.040327443505742, 29.607739776945582, 41.82266382000974, 58.884759462822345, 83.18002071228824)
+
+# d = 3
+y3 = c(4.659840488760341, 7.133291529472253, 11.590927872145325, 17.625159531916225, 27.760603800328834, 43.247524935394786, 68.4321011345506, 107.20985631396886, 169.21941242331545, 267.04187464717745, 423.11686250212784)
+
+# d = 4
+y4 = c(6.156334571526998, 10.577551767646812, 16.963940428354896, 28.485926374928717, 47.04827597259361, 78.28180749387901, 130.19475236633826, 216.600937504728, 360.83195135541087, 603.6963175409591, 1008.8890848383464)
+```
+
+```{r, echo=FALSE, out.width = '500px',out.height='500px', dpi=200}
+par(mfrow=c(1,2))
+plot(x,y0,ylim=c(0,1.4),ylab = 'average tree size', xlab = 'number of nodes',
+     main = 'Average tree size, 5 runs, d=0')
+curve(.75*atan(x/20)+.02,from=2, to =16000,col='red',add=TRUE)
+
+plot(x,y2,ylab = 'average tree size', xlab = 'number of nodes',
+     main = 'Average tree size, 5 runs, d=2')
+model2 = lm(y2~poly(log(x),4,raw=TRUE))
+test = seq(16,16000,1)
+vals= predict(model2,list(x = test))
+lines(test,vals,col='red')
+```
+
+For $d=0$, the tree size basically stops increasing after about 32 nodes, settling down to about 1.2. We tested smaller graph sizes than 16 in order to fit the curve, and found that arctan works particularly well because it also settles down very quickly. For $d=0$, $f(n) = .75*\arctan(n/20)+.02$. $d=2$ clearly exhibits different behavior - the tree size increases with the number of nodes at a decreasing rate, characteristic of a logarithmic function. We used regression to find a function that exactly fits our data points (The $R^2$ was $>.999$). The result was: f(n) = `r model2$coefficients[1]` +`r model2$coefficients[2]`log(x) +  `r model2$coefficients[3]` log(x)^2 + `r model2$coefficients[4]` log(x)^3 +  `r model2$coefficients[5]` log(x)^4. The y-intercept is not very meaningful in these cases; it is set so that the model fits, but it doesn't make a lot of sense because the model is not based on any data from $n=0-15$.   
+
+```{r, echo=FALSE}
+par(mfrow=c(1,2))
+plot(x,y3,ylab = 'average tree size', xlab = 'number of nodes',
+     main = 'Average tree size, 5 runs, d=3')
+model3 = lm(y3~poly(log(x),4,raw=TRUE))
+test = seq(16,16000,1)
+vals= predict(model3,list(x = test))
+lines(test,vals,col='red')
+
+plot(x,y4,ylab = 'average tree size', xlab = 'number of nodes',
+     main = 'Average tree size, 5 runs, d=4')
+model4 = lm(y4~poly(log(x),4,raw=TRUE))
+test = seq(16,16000,1)
+vals= predict(model4,list(x = test))
+lines(test,vals,col='red')
+```
+
+Again, we used regression to find functions that exactly fit our data points. The functional form for d=3,4 was basically identical to d=2, only the model coefficients changed. For d=3, f(n) = `r model3$coefficients[1]` +`r model3$coefficients[2]`log(x) +  `r model3$coefficients[3]` log(x)^2 + `r model3$coefficients[4]` log(x)^3 +  `r model3$coefficients[5]` log(x)^4 and for d=4, f(n) = `r model4$coefficients[1]` +`r model4$coefficients[2]`log(x) +  `r model4$coefficients[3]` log(x)^2 + `r model4$coefficients[4]` log(x)^3 +  `r model3$coefficients[5]` log(x)^4.  Again, the y-intercepts are not especially meaningful in these cases because the  model does not include data from $n=0-15$.
+
