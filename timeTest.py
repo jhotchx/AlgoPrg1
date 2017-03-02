@@ -27,10 +27,10 @@ def Prim(V,E,d):
                     H.insert((e[0],distd[e[0]]))
     return (distd.values())
 
+@profile
 def genRandomGraph(n,d,t=0,nodes=None):
     edgedict={}
-    threshold=1
-    #threshold = cutOff(n,d,t)
+    threshold = cutOff(n,d,t)
     if d == 0:
         if nodes is None:
             nodes = range(n)
@@ -40,15 +40,13 @@ def genRandomGraph(n,d,t=0,nodes=None):
                     edge = [i,j,random.random()]
                     if edge[2]<threshold:
                         if i in edgedict:
-                            edgedict[i].insert((edge[1],edge[2]))
+                            edgedict[i].append([edge[1],edge[2]])
                         else:
-                            edgedict[i] = minheap()
-                            edgedict[i].insert(([edge[1],edge[2]]))
+                            edgedict[i] = [[edge[1],edge[2]]]
                         if j in edgedict:
-                            edgedict[j].insert((edge[0],edge[2]))
+                            edgedict[j].append([edge[0],edge[2]])
                         else:
-                            edgedict[j] = minheap()
-                            edgedict[j].insert(([edge[0],edge[2]]))
+                            edgedict[j] = [[edge[0],edge[2]]]
     else:
         if nodes is None:
             nodes = [[None]*d]*n
@@ -61,17 +59,16 @@ def genRandomGraph(n,d,t=0,nodes=None):
                     edge = [itup,jtup,euclideanDist(nodes[i],nodes[j])]
                     if edge[2]<threshold:
                         if itup in edgedict:
-                            edgedict[itup].insert((edge[1],edge[2]))
+                            edgedict[itup].append([edge[1],edge[2]])
                         else:
-                            edgedict[itup] = minheap()
-                            edgedict[itup].insert(([edge[1],edge[2]]))
+                            edgedict[itup] = [[edge[1],edge[2]]]
                         if jtup in edgedict:
-                            edgedict[jtup].insert((edge[0],edge[2]))
+                            edgedict[jtup].append([edge[0],edge[2]])
                         else:
-                            edgedict[jtup] = minheap()
-                            edgedict[jtup].insert(([edge[0],edge[2]]))
+                            edgedict[jtup] = [[edge[0],edge[2]]]
     return(nodes,edgedict)
-    
+
+
 V,E = genRandomGraph(n,d)
 Prim(V,E,d)
 
