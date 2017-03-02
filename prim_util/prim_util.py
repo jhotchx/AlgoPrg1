@@ -1,7 +1,7 @@
-import itertools as it
-import time as time
+from collections import defaultdict
 import math
-import numpy as np
+import random
+import sys
 
 class minheap:
     def __init__(self):
@@ -73,64 +73,66 @@ class minheap:
         self.heapify(0)
         return min
 
-def genRandomGraph(n,d,t=0):
-    edges=[]
+def euclideanDist(a,b):
+    temp = 0
+    for i in range(len(a)):
+        temp +=math.pow((a[i]-b[i]),2)
+    return(math.sqrt(temp))
+
+def genRandomGraph(n,d,t=0,nodes=None):
+    edgedict=defaultdict(list)
     threshold = cutOff(n,d,t)
     if d == 0:
-        nodes = range(n)
-        for i in range(n):
-            for j in range(n):
-                if j<i:
-                    edge = ((i,j),random.random())
-                    if edge[1]<threshold:
-                        edges.append(edge)
-    else:
-        nodes = [[None]*d]*n
-        np.random.rand(n,d)
-        for i in range(n):
+        if nodes is None:
+            nodes = range(n)
+        for i in range(n-1):
             for j in range(n):
                 if j>i:
-                    edge = ((nodes[i],nodes[j]),np.linalg.norm(nodes[i]-nodes[j]))
-                    if edge[1]<threshold:
-                        edges.append(edge)
-    return(nodes,edges)
+                    edgewgt = random.random()
+                    if edgewgt<threshold:
+                        edgedict[i].append([j,edgewgt])
+                        edgedict[j].append([i,edgewgt])
+    else:
+        if nodes is None:
+            nodes = [[None]*d]*n
+            nodes = [[random.random() for j in nodes[i]] for i in range(n)]
+        for i in range(n-1):
+            for j in range(n):
+                if j>i:
+                    itup=tuple(nodes[i])
+                    jtup=tuple(nodes[j])
+                    edgewgt = euclideanDist(nodes[i],nodes[j])
+                    if edgewgt<threshold:
+                        edgedict[itup].append([jtup,edgewgt])
+                        edgedict[jtup].append([itup,edgewgt])
+    return(nodes,edgedict)
 
 def cutOff(n,d,extra=0):
     # multiply predicted cutoff by 2 to account for outliers
     if d ==0:
-        return((2/math.pi)*(math.atan(-n/10)+math.pi/2)+.001+extra)
+        return((3/math.pi)*(math.atan(-n/20)+math.pi/2)*2+extra)
     elif d ==2:
-        return((8/math.pi)*(math.atan(-n/20)+math.pi/2)+.01+extra)
+        return((3/math.pi)*(math.atan(-n/35)+math.pi/2)+0.03+extra)
     elif d==3:
-        return((3/math.pi)*(math.atan(-n/30)+math.pi/2)+0.2+extra)
-    else:
-        return((3/math.pi)*(math.atan(-n/30)+math.pi/2)+0.5)
+        return((3/math.pi)*(math.atan(-n/35)+math.pi/2)+0.18+extra)
+    elif d==4:
+        return((3/math.pi)*(math.atan(-n/60)+math.pi/2)+0.23+extra)
 
 def Prim(V,E,d):
-    @profile
     if d!=0:
         V = tuple(map(tuple, V))
     SP = set(V)
-    #print("Initial SP=",SP)
     distd = dict(zip(V,[math.inf]*len(V)))
-    prevd = dict(zip(V,[None]*len(V)))
     distd[V[0]] = 0
-    H = minheap()     #Heap
+    H = minheap()     
     H.insert((V[0],distd[V[0]]))
     while H.heapsize!=-1:
         v = H.delete() 
         if SP:
            SP.remove(v[0])
-        for e in E:
-            if d!=0:
-                enodes = [tuple(i) for i in e[0]]
-            else:
-                enodes = e[0]
-            if v[0] in enodes:
-                w = enodes[1-enodes.index(v[0])]
-                if w in SP:
-                    if distd[w] > e[1]:
-                        distd[w] = e[1]
-                        prevd[w] = v[0]
-                        H.insert((w,distd[w]))
+        for e in E[v[0]]:
+            if e[0] in SP:
+                if distd[e[0]] > e[1]:
+                    distd[e[0]] = e[1]
+                    H.insert((e[0],distd[e[0]]))
     return (distd.values())
