@@ -6,6 +6,10 @@ output:
   pdf_document: default
 ---
 
+# Algorithm Choice
+
+To begin our search for an algorithm for this assignment, we decided it would be safest to stick to those that we learned in class.  That meant we needed to decide between Kruskal's and Prim's algorithms.  After considering our abilities (we could only reasonably expect to use a binary heap for Prim's), we looked at the complexities for each algorithm.  In particular, Prim's with a binary heap runs in $O\left(\left(|E|+|V|\right)\log|V|\right)=O\left(|E|log|V|\right)$ time.  Kruskal's runs in $O\left(|E|\log|V|^2\right)=O\left(2*|E|log|V|\right)=O\left(|E|log|V|\right)$ time.  Clearly, then, Prim's and Kruskal's are asymptotically the same given our intended implementation strategies.  As such, we decided to pursue Prim's algorithm because we felt more comfortable with a binary heap than we did with a UnionFind data structure.
+
 # Part 1
 ```{r, include=FALSE}
 # d = 0
