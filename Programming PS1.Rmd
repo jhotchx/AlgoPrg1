@@ -226,19 +226,36 @@ for e in E[v[0]]:
 ```
 
 ## Runtime
-
-```{r,echo=FALSE}
-y0 = c(0.001385000000000025, 0.004056000000000004, 0.006791000000000047, 0.012427000000000021, 0.028332000000000024, 0.07329400000000003, 0.22835999999999995, 0.79093, 2.624345, 9.853193000000001, 38.410444)
-y2 = c(0.0010130000000003747, 0.0030989999999988527, 0.008869999999994604, 0.025455000000000894, 0.08362499999999784, 1.0456080000000014, 1.334620000000001, 5.201846000000003, 20.010974000000004, 82.798501, 327.699589)
-y3 = c(0.0026419999999802712, 0.005560000000002674, 0.0105829999999969, 0.03440499999999247, 0.11828499999995756, 0.39876499999996895, 1.6079859999999826, 6.416526000000033, 25.43127800000002, 101.78053699999998, 413.8965300000001)
-y4 = c(0.002410000000054424, 0.0047559999998156854, 0.014128999999911684, 0.039420999999947526, 0.12845999999990454, 0.4249720000000252, 1.6997339999998076, 6.839534999999842, 27.931145000000015, 109.77722000000017, 489.96768799999995)
+### Algorithm
+```{r,echo=FALSE,out.height='350px',out.width='350px',fig.align='center'}
+# prim
+y0 = c(0.0003130000004603062, 0.0009939999999915017, 0.0034810000006473274, 0.004860000000007858, 0.01717800000005809, 0.028130000000601285, 0.06500499999947351, 0.18431499999951484, 0.33389400000032765, 0.7536749999999302, 1.7543930000001637)
+y2 = c(0.0009060000002136803, 0.001419000000169035, 0.00338000000010652, 0.005950000000666478, 0.011561000000256172, 0.025098999999499938, 0.05107399999997142, 0.11715199999980541, 0.2938930000000255, 0.7963299999992159, 2.5515249999989464)
+y3 = c(0.0006140000004961621, 0.001335000000835862, 0.0029869999998481944, 0.010463000000527245, 0.014444000000366941, 0.03230799999982992, 0.0828879999990022, 0.23712700000032783, 0.6547669999999925, 2.5560789999999542, 9.991907999999967)
+y4 = c(0.0004559999997582054, 0.0020629999999073334, 0.003918000000339816, 0.008663999999043881, 0.016949999999269494, 0.033026999999492546, 0.08777700000064215, 0.18770999999833293, 0.5100110000003042, 1.7045149999994464, 4.376130000000558)
 
 par(mfrow=c(1,2))
-plot(x,y0,xlab = 'nodes',ylab = 'runtime (seconds)', main = 'runtime, d=0')
-plot(x,y2,xlab = 'nodes',ylab = 'runtime (seconds)', main = 'runtime, d=2')
-plot(x,y3,xlab = 'nodes',ylab = 'runtime (seconds)', main = 'runtime, d=3')
-plot(x,y4,xlab = 'nodes',ylab = 'runtime (seconds)', main = 'runtime, d=4')
+plot(x,y0,xlab = 'nodes',ylab = 'time (seconds)', main = 'runtime, d=0')
+plot(x,y2,xlab = 'nodes',ylab = 'time (seconds)', main = 'runtime, d=2')
+plot(x,y3,xlab = 'nodes',ylab = 'time (seconds)', main = 'runtime, d=3')
+plot(x,y4,xlab = 'nodes',ylab = 'time (seconds)', main = 'runtime, d=4')
 ```
 
-For all choices of d, runtime exhibits the same functional form with respect to the number of nodes. This is the characteristic O(n log n) curve, which makes sense as, due to our optimization reducing the number of edges submitted to Prim's algorithm, |E| is O(n). The runtime increases substantially with d, as well; a line-by-line analysis indicates that much of the increased time comes in the graph generation stage - calculating the Euclidean distance between nodes in 4 dimensions is substantially more costly than 2 dimensions. For all d and large n, nearly all of the runtime depicted above comes from   
-generating the random graphs - for n = 16000, d = 0, Prim's algorithm takes 6 seconds to run on 305343 edges which met the threshold, while generating those edges takes 925 seconds.
+All of the runtime plots are based on 5 trial runs for each value of n. For all choices of d, algorithm runtime exhibits the same functional form with respect to the number of nodes. This is the characteristic O(n log n) curve, which makes sense as, due to our optimization reducing the number of edges submitted to Prim's algorithm, |E| is O(n). The runtime seems to increase with d, as well; this is a result of sub-optimal edge weight thresholds - we are passing a few more edges than we need to to Prim's algorithm. It is just a fluke that d=3 has higher runtime than d=4 - one of the runs here must have resulted in an incomplete MST (due to the threshold being a bit too low for the particular set of edges generated), so we generated a new graph and tried again. 
+
+### Random graph generation
+```{r, echo=FALSE,out.height='350px',out.width='350px',fig.align='center'}
+# graph gen
+y0 = c(0.00014599999940401176, 0.0005499999997482519, 0.002058000000033644, 0.004224999999678403, 0.02012899999954243, 0.04249699999945733, 0.15763299999980518, 0.6109420000002501, 2.7334450000007564, 9.072118000000046, 37.03855399999975)
+y2 = c(0.0009289999998145504, 0.001706000000012864, 0.0074930000000676955, 0.021867999999813037, 0.08168800000021292, 0.30703099999936967, 1.311547999999675, 5.2139119999992545, 20.90987899999982, 86.07389700000022, 344.6106970000001)
+y3 = c(0.0007880000011937227, 0.002109000000928063, 0.008346999999048421, 0.03020499999911408, 0.10050000000046566, 0.3791930000006687, 1.642930999998498, 6.321368999999322, 26.223189000000275, 112.32264000000032, 425.03009399999974)
+y4 = c(0.0006759999996575061, 0.0024069999999483116, 0.008588000000600005, 0.030733000001418986, 0.11589699999967706, 0.44803999999930966, 1.7956709999998566, 6.96002099999896, 28.119935000000623, 118.1432900000018, 422.32933500000036)
+
+par(mfrow=c(1,2))
+plot(x,y0,xlab = 'nodes',ylab = 'time (seconds)', main = 'Graph gen time, d=0')
+plot(x,y2,xlab = 'nodes',ylab = 'time  (seconds)', main = 'Graph gen time, d=2')
+plot(x,y3,xlab = 'nodes',ylab = 'time  (seconds)', main = 'Graph gen time, d=3')
+plot(x,y4,xlab = 'nodes',ylab = 'time  (seconds)', main = 'Graph gen time, d=4')
+```
+
+Most of the total run time for our program comes from the graph generation stage, which exhibits a functional form closer to O($n^2$). Graph generation time slows considerably for all d not equal to 0, since for d=0 edge weights can be generated without any calculation. Graph generation time increases a bit from d=2 to d=4, since it is slightly more costly to calculate Euclidean distances in more dimensions. The worse performance of d=3 relative to d=4 is again a result of the edge weight threshold being set too low for one of the d=3 runs.
