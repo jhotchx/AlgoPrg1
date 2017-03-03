@@ -1,4 +1,4 @@
-import prim_util.prim_util_space_temp as pu
+import prim_util.prim_util as pu
 import importlib as imp
 import math
 import statistics

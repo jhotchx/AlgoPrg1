@@ -51,9 +51,8 @@ class minheap:
         if self.heapindex:
             if value[0] in self.heapindex:
                 id = self.heapindex[value[0]]
-                if self.heaparray[id][1]>value[1]:
-                    self.heaparray[id]=value
-                    self.increasekey(id, value)
+                self.heaparray[id]=value
+                self.increasekey(id, value)
             else:
                 self.heapsize += 1
                 self.heaparray.append(value)
@@ -114,9 +113,9 @@ def cutOff(n,d,extra=0):
     elif d ==2:
         return((3/math.pi)*(math.atan(-n/35)+math.pi/2)+0.03+extra)
     elif d==3:
-        return((3/math.pi)*(math.atan(-n/35)+math.pi/2)+0.18+extra)
+        return((10/math.pi)*(math.atan(-n/30)+math.pi/2)+0.08+extra)
     elif d==4:
-        return((3/math.pi)*(math.atan(-n/60)+math.pi/2)+0.23+extra)
+        return((5/math.pi)*(math.atan(-n/90)+math.pi/2)+0.16+extra)
 
 def Prim(V,E,d):
     if d!=0:

@@ -1,4 +1,4 @@
-from prim_util.prim_util_space_temp import *
+from prim_util.prim_util import *
 import statistics
 import sys
 
