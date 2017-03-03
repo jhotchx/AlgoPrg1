@@ -80,13 +80,13 @@ We made a few optimizations.  Some of them were quite small and probably made li
 
 1. Following the hint in the assignment, we attempted to find a weight threshold as a function of $n$, $k(n)$.
 2. Storing edges in a dictionary format.  This stores all of the edges that we keep twice, once for each node belonging to the edge.  Entries in the dictionary are (node, edgeweight).
-\end{enumerate}
 
-### Determining edge weight threshold (k(n))
+
+### Determining edge weight threshold k(n)
 
 To find a threshold function, $k(n)$, we first gathered data from the algorithm.  We collected the maximum edge weight over 5 runs for $n$ as a power of 2 at the same levels as those we used for the other graphs.  After putting those values over a scatter plot, we fit a curve to them using the strategy described below.
 
-We chose to model the curve using a tangent function due to its desirable mathematical properties.  In particular, we thought it would be helpful to have a curve with built in asymptotics.  The asymptotic properties can help to mitigate any odd behaivor at extremely large values of $n$ that could occur in equations without such properties (such as an eventual droop to a negative threshold or a threshold equal to zero). Recall an arctangent curve without modification,
+We chose to model the curve using a tangent function due to its desirable mathematical properties.  In particular, we thought it would be helpful to have a curve with built in asymptotes.  The asymptotic properties can help to mitigate any odd behavior at extremely large values of $n$ that could occur in equations without such properties (such as an eventual droop to a negative threshold or a threshold equal to zero). Recall an arctangent curve without modification,
 
 ```{r, echo=FALSE,fig.show="hold",fig.keep="last"}
 plot(curve(atan(x), from=-45, to=45),xlim=c(-40,40),
@@ -176,7 +176,7 @@ In the event that the pruned graph is too pruned, our algorithm will call itself
 
 ### Applying a Dictionary to Store Edges
 
-Another big jump in runtime came when we stopped having to loop over all edges in order to find those that were involved ina  particular node, $v$.  This applies to the line referenced earlier from the pseudo code, for $(v,w)\in E$ and $w \notin S^\prime$, and is a response to looking at the task at hand more holistically.  Instead of restricting ourselves to a full list of edges, we simply save edges from the time of generation into a dictionary and only if they pass the threshold.    In this way, we never actually have the complete list of edges stored.  For the dictionary, keys are nodes.  Values for the dictionary are the partner node and the weight of the edge they share.  That means each edge appears twice in the dictionary (once for each node).
+Another big improvement in runtime came when we stopped having to loop over all edges in order to find those that were involved in a particular node, $v$.  This applies to the line referenced earlier from the pseudo code, for $(v,w)\in E$ and $w \notin S^\prime$, and is a response to looking at the task at hand more holistically.  Instead of restricting ourselves to a full list of edges, we simply save edges from the time of generation into a dictionary and only if they pass the threshold.    In this way, we never actually have the complete list of edges stored.  For the dictionary, keys are nodes.  Values for the dictionary are the partner node and the weight of the edge they share.  That means each edge appears twice in the dictionary (once for each node).
 
 This and other small changes changed our ``for edges"" loop from
 
