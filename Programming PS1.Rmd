@@ -72,7 +72,7 @@ In particular, consider one of the deeper lines of pseudo code for Prim's: for $
 
 This issue stemmed from not approaching the task more holistically.  Many efficiencies were gained when we stopped treating the tasks (generating a graph and creating a minimum spanning tree) as two separate tasks and instead one larger task.
 
-Finally, our implementation made clear that the devil is in the details.  It is one thing to consider an algorithm as pseudocode and entirely another to make it functional.  For example, we needed to change our heap so that it would notice whether or not a node that was trying to be inserted was already on the heap, and if so, would change the value of that node instead of adding a duplicate.
+Finally, our implementation made clear that the devil is in the details.  It is one thing to consider an algorithm as pseudocode and entirely another to make it functional.  For example, we needed to change our heap so that it would notice whether or not a node that was trying to be inserted was already on the heap, and if so, would change the value of that node instead of adding a duplicate.  This required adding a dictionary to the internals of the heap that would keep track of the index of particular nodes within the heap.
 
 ## Optimization Explanations
 
@@ -115,7 +115,7 @@ abline(h=pi, lty=2)
 Now consider that by dividing $x$ we can make the slope less steep.  Furthermore, by multiplying the entire equation by a value we can change the height of the bend (and increase the $y$-intercept) without moving the asymptote at $y=0$.  Consider
 
 $$
-\dfrac{4}{\pi}\left(\text{arctan}\left(\dfrac{x}{2}\right)+\dfrac{\pi}{2}\right).
+\dfrac{4}{\pi}\left(\text{arctan}\left(-\dfrac{x}{2}\right)+\dfrac{\pi}{2}\right).
 $$
 
 ```{r, echo=FALSE,fig.show="hold",fig.keep="last"}
@@ -126,7 +126,31 @@ abline(h=0, lty=2)
 abline(h=4, lty=2)
 ```
 
-Using the sorts of manipulations described above, we could modify the tangent curves to fit the plots, as you can see below for each dimension.
+Using the sorts of manipulations described above, we could modify the tangent curves to fit the plots, as you can see below for each dimension:
+
+Dimension 0:
+
+$$
+\dfrac{6}{\pi}\left(\text{arctan}\left(-\dfrac{x}{20}\right)+\dfrac{\pi}{2}\right)
+$$
+
+Dimension 2:
+
+$$
+\dfrac{3}{\pi}\left(\text{arctan}\left(-\dfrac{x}{35}\right)+\dfrac{\pi}{2}\right)+0.03
+$$
+
+Dimension 3:
+
+$$
+\dfrac{10}{\pi}\left(\text{arctan}\left(-\dfrac{x}{30}\right)+\dfrac{\pi}{2}\right)+0.08
+$$
+
+Dimension 4:
+
+$$
+\dfrac{5}{\pi}\left(\text{arctan}\left(-\dfrac{x}{90}\right)+\dfrac{\pi}{2}\right)+0.16
+$$
 
 ```{r,echo=FALSE}
 y0 = c(0.3400149310355898, 0.1369654371267507, 0.0766013703918006, 0.05166156780009534, 0.03450585230327807, 0.01700032980212829, 0.007636573427697746, 0.004752657563726892, 0.002843524893660798, 0.0012263764848782222, 0.0007029643572269428)
@@ -146,6 +170,39 @@ curve((10/pi)*(atan(-x/30)+pi/2)+0.08,from=2, to =16000, add=TRUE,col='red')
 
 plot(x,y4, xlab = 'nodes',ylab = 'edge weight', main = 'Max edge size, d=4')
 curve((5/pi)*(atan(-x/90)+pi/2)+0.16,from=2, to =16000, add=TRUE,col='red')
+```
+
+In the event that the pruned graph is too pruned, our algorithm will call itself with a higher threshold (previous threshold + 0.01) and try again.  This was a necessary addition because it is possible to remove too many edges.  In the event that too many edges are removed, Prim's algorithm will be unable to create a spanning tree, and will stop before all nodes have been reached (there will be nodes with minimum distances still equivalent to infinity).  It does not, however, fail by creating the wrong tree.  This is because if there is not an edge to connect the node to the tree, it is because they were all thrown out.  If there _is_ an edge or multiple edges, they must be the shortest edges that connect to that node, in which will be included the shortest.  It is not possible to keep a longer edge than the shortest, because by definition the shortest would have been kept also.
+
+### Applying a Dictionary to Store Edges
+
+Another big jump in runtime came when we stopped having to loop over all edges in order to find those that were involved ina  particular node, $v$.  This applies to the line referenced earlier from the pseudo code, for $(v,w)\in E$ and $w \notin S^\prime$, and is a response to looking at the task at hand more holistically.  Instead of restricting ourselves to a full list of edges, we simply save edges from the time of generation into a dictionary and only if they pass the threshold.    In this way, we never actually have the complete list of edges stored.  For the dictionary, keys are nodes.  Values for the dictionary are the partner node and the weight of the edge they share.  That means each edge appears twice in the dictionary (once for each node).
+
+This and other small changes changed our ``for edges"" loop from
+
+```{}
+for e in E:
+    if d!=0:
+        enodes = [tuple(i) for i in e[0]]
+    else:
+        enodes = e[0]
+    if v[0] in enodes:
+        w = enodes[1-enodes.index(v[0])]
+        if w in SP:
+            if distd[w] > e[1]:
+                distd[w] = e[1]
+                prevd[w] = v[0]
+                H.insert((w,distd[w]))
+```
+
+to
+
+```{}
+for e in E[v[0]]:
+    if e[0] in SP:
+        if distd[e[0]] > e[1]:
+            distd[e[0]] = e[1]
+            H.insert((e[0],distd[e[0]]))
 ```
 
 ## Runtime
